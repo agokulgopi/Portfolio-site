@@ -112,10 +112,26 @@ export default function Portfolio() {
   const [scrolled, setScrolled] = useState(false);
   const [activeFilter, setActiveFilter] = useState('All');
 
+  // Mouse position state for parallax
+  const [mouseX, setMouseX] = useState(0);
+  const [mouseY, setMouseY] = useState(0);
+
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
+    const handleMouseMove = (event) => {
+      // Normalize coordinates to a range of -1 to 1 based on viewport center
+      const x = (event.clientX / window.innerWidth) * 2 - 1;
+      const y = (event.clientY / window.innerHeight) * 2 - 1;
+      setMouseX(x);
+      setMouseY(y);
+    };
+
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
   }, []);
 
   const projects = [
@@ -160,6 +176,18 @@ export default function Portfolio() {
   // The embeddable URL for the main Showreel modal
   const SHOWREEL_EMBED_URL = "https://www.youtube.com/embed/b-3QMMyarEA?autoplay=1";
 
+  // Parallax styles computed from mouseX/mouseY
+  const titleParallaxStyle = {
+    transform: `translate3d(${mouseX * 40}px, ${mouseY * 40}px, 0) rotateX(${mouseY * 6}deg) rotateY(${-mouseX * 6}deg)`,
+    transition: 'transform 60ms linear',
+    transformStyle: 'preserve-3d',
+  };
+
+  const backgroundParallaxStyle = {
+    transform: `translate3d(${-mouseX * 120}px, ${-mouseY * 120}px, 0)`,
+    transition: 'transform 80ms linear',
+  };
+
   return (
     <div className="min-h-screen bg-black text-zinc-100 font-sans selection:bg-cyan-500/30 selection:text-cyan-200">
       
@@ -184,13 +212,19 @@ export default function Portfolio() {
         {/* Background Overlay simulating atmosphere */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops))] from-zinc-800/20 via-black to-black z-0"></div>
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 z-0"></div>
+
+        {/* Floating Background Element (parallax) */}
+        <div 
+          className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl opacity-50 pointer-events-none"
+          style={backgroundParallaxStyle}
+        ></div>
         
         <div className="container mx-auto px-6 relative z-10 text-center">
           <p className="text-cyan-400 font-mono tracking-[0.3em] mb-4 animate-pulse">UNREAL ENGINE ARTIST</p>
-          <h1 className="text-5xl md:text-8xl font-black text-white mb-6 tracking-tight leading-tight">
-            <GlitchText text="IMMERSIVE" /> <br />
+          <h1 className="text-5xl md:text-8xl font-black text-white mb-6 tracking-tight leading-tight" style={titleParallaxStyle}>
+            <GlitchText text="INFINITE" /> <br />
             <span className="text-stroke-thin text-transparent bg-clip-text bg-linear-to-b from-white to-zinc-600">
-              WORLDS
+              PARADISO
             </span>
           </h1>
           <p className="max-w-2xl mx-auto text-zinc-400 text-lg md:text-xl mb-10 leading-relaxed">
