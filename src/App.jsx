@@ -380,7 +380,6 @@ export default function Portfolio() {
               <div className="p-4 bg-zinc-900 rounded-lg border border-zinc-800 mt-4">
                 <p className="text-xs text-zinc-500 uppercase tracking-widest mb-2">Contact Info</p>
                 <p className="text-white font-mono mb-1">gokulgopi2106@gmail.com</p>
-                <p className="text-zinc-400 font-mono">+91 97457 61023</p>
                 <p className="text-zinc-500 text-sm mt-2">Ernakulam, Kerala</p>
               </div>
             </div>
