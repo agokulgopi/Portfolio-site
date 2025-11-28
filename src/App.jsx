@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Play, X, Github, Linkedin, Instagram, Mail, ChevronRight, ExternalLink, MapPin, Code, Film, Layers } from 'lucide-react';
+import { Play, X, Github, Linkedin, Instagram, Mail, ChevronRight, ChevronLeft, ExternalLink, MapPin, Code, Film, Layers, Image as ImageIcon } from 'lucide-react';
 
 // --- Components ---
 
@@ -105,6 +105,39 @@ const SocialLink = ({ href, icon: Icon, label }) => (
   </a>
 );
 
+// Gallery Image Card Component
+const GalleryImageCard = ({ title, url, tags, className }) => (
+  <div className={`group relative w-full h-full rounded-lg overflow-hidden shadow-2xl transform transition-transform duration-300 hover:scale-[1.005] hover:shadow-cyan-500/40 ${className}`}>
+    <img 
+      src={url} 
+      alt={title} 
+      className="w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-80"
+      style={{ minHeight: '300px' }} 
+    />
+    
+    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/0 to-transparent opacity-100 p-8 flex flex-col justify-end">
+      <h4 className="text-white text-3xl font-bold mb-2">{title}</h4>
+      <div className="flex flex-wrap gap-2">
+        {tags.map((tag, i) => (
+          <span key={i} className="text-xs font-mono px-3 py-1 bg-cyan-600/80 text-black rounded-full shadow-lg">
+            {tag}
+          </span>
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
+// Gallery image data (images should be placed in the public/gallery/ folder)
+const galleryImages = [
+  { id: 1, title: "Forever ShortFlim (Upcoming)", url: "/gallery/Forever.png", tags: ["Lighting", "Romance"] },
+  { id: 2, title: "Beach Sunset", url: "/gallery/Beach.png", tags: ["Environment", "Golden Hour"] },
+  { id: 3, title: "Foliages on Rocks", url: "/gallery/Beach1.png", tags: ["Environment", "Foliage"] },
+  { id: 4, title: "Truck Lit", url: "/gallery/Truck%20Lit.png", tags: ["Lighting", "Photogrammetry"] },
+  { id: 5, title: "Church", url: "/gallery/post%201.png", tags: ["Night", "Eerie"] },
+  { id: 6, title: "Japanese Mansion", url: "/gallery/Master3.png", tags: ["Environment", "Fog", "Anime"] },
+];
+
 // --- Main App ---
 
 export default function Portfolio() {
@@ -115,6 +148,10 @@ export default function Portfolio() {
   // Mouse position state for parallax
   const [mouseX, setMouseX] = useState(0);
   const [mouseY, setMouseY] = useState(0);
+
+  // Gallery state
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [direction, setDirection] = useState('right');
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -133,6 +170,27 @@ export default function Portfolio() {
       window.removeEventListener('mousemove', handleMouseMove);
     };
   }, []);
+
+  // Gallery navigation functions
+  const totalImages = galleryImages.length;
+  const nextImage = () => {
+    setDirection('right');
+    setActiveIndex((prevIndex) => (prevIndex + 1) % totalImages);
+  };
+  const prevImage = () => {
+    setDirection('left');
+    setActiveIndex((prevIndex) => (prevIndex - 1 + totalImages) % totalImages);
+  };
+
+  // Gallery auto-advance (5 seconds)
+  useEffect(() => {
+    if (totalImages === 0) return;
+    const interval = setInterval(() => {
+      setDirection('right');
+      setActiveIndex((prevIndex) => (prevIndex + 1) % totalImages);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [totalImages]);
 
   const projects = [
     {
@@ -155,7 +213,7 @@ export default function Portfolio() {
       icon: Layers,
       category: "Game Dev",
       // ADDED user's requested link to be opened in a new tab
-      externalUrl: "https://www.linkedin.com/posts/gokul-gopi-09878b2b2_unrealengine-cinematics-realtimerendering-activity-7347119540784250880-mXFK?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEs4xrQB8W9lFBTKfb7dVzPD1aYgPGGZKKw",
+      externalUrl: "https://youtu.be/tHE8w98t0bY?si=DzApRVAQeQc4308A",
     },
     {
       title: "Anime Virtual Production",
@@ -164,7 +222,8 @@ export default function Portfolio() {
       tags: ["Virtual Production", "Stylized Rendering", "Green Screen"],
       imageColor: "bg-gradient-to-br from-blue-900 to-black",
       icon: Code,
-      category: "Virtual Prod"
+      category: "Virtual Prod",
+      //externalUrl: "https://youtu.be/tHE8w98t0bY?si=DzApRVAQeQc4308A",
       // No externalUrl for this one, so clicking the card will do nothing
     }
   ];
@@ -174,7 +233,7 @@ export default function Portfolio() {
     : projects.filter(p => p.category === activeFilter);
 
   // The embeddable URL for the main Showreel modal
-  const SHOWREEL_EMBED_URL = "https://www.youtube.com/embed/b-3QMMyarEA?autoplay=1";
+  const SHOWREEL_EMBED_URL = "https://www.youtube.com/embed/y6ea4uXV7ow?autoplay=1";
 
   // Parallax styles computed from mouseX/mouseY
   const titleParallaxStyle = {
@@ -317,6 +376,68 @@ export default function Portfolio() {
         </div>
       </section>
 
+      {/* Image Gallery Section */}
+      <section id="gallery" className="py-24 bg-zinc-950 border-t border-zinc-900">
+        <div className="container mx-auto px-6">
+          <SectionTitle icon={ImageIcon}>Unreal Renders</SectionTitle>
+          <p className="text-zinc-400 max-w-3xl mb-12">
+            A curated selection of high-fidelity environmental and cinematic renders, showcasing lighting and composition skills in Unreal Engine.
+          </p>
+
+          {/* Carousel Container (16:9 Aspect Ratio enforced by aspect-video) */}
+          <div className="relative w-full max-w-6xl mx-auto rounded-xl bg-zinc-900 border border-zinc-700 overflow-hidden shadow-2xl aspect-video">
+            
+            {/* Navigation Left */}
+            <button
+              onClick={prevImage}
+              className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-3 bg-black/50 hover:bg-cyan-600/80 text-white rounded-full transition-all duration-300 shadow-xl opacity-80 hover:opacity-100"
+              aria-label="Previous Image"
+            >
+              <ChevronLeft size={30} />
+            </button>
+
+            {/* Carousel Content (Single Image) */}
+            <div className="w-full h-full flex items-center justify-center">
+              {galleryImages[activeIndex] && (
+                <GalleryImageCard 
+                  key={galleryImages[activeIndex].id + direction} 
+                  {...galleryImages[activeIndex]} 
+                  className={direction === 'right' ? 'slide-in-right' : 'slide-in-left'}
+                />
+              )}
+            </div>
+
+            {/* Navigation Right */}
+            <button
+              onClick={nextImage}
+              className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-3 bg-black/50 hover:bg-cyan-600/80 text-white rounded-full transition-all duration-300 shadow-xl opacity-80 hover:opacity-100"
+              aria-label="Next Image"
+            >
+              <ChevronRight size={30} />
+            </button>
+            
+            {/* Indicators */}
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
+              {galleryImages.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    setDirection(index > activeIndex ? 'right' : 'left'); 
+                    setActiveIndex(index);
+                  }}
+                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                    activeIndex === index 
+                      ? 'bg-cyan-500 w-5 shadow-cyan-400/50 shadow-md' 
+                      : 'bg-zinc-600 hover:bg-zinc-400'
+                  }`}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Experience Section */}
       <section id="experience" className="py-24 bg-zinc-950 border-t border-zinc-900">
         <div className="container mx-auto px-6">
@@ -454,6 +575,34 @@ export default function Portfolio() {
       <style>{`
         .text-stroke-thin {
           -webkit-text-stroke: 1px rgba(255,255,255,0.3);
+        }
+        
+        /* Gallery slide animations */
+        .slide-in-right {
+          animation: slideInRight 0.5s ease-out forwards;
+        }
+        @keyframes slideInRight {
+          from {
+            opacity: 0;
+            transform: translateX(50px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+        .slide-in-left {
+          animation: slideInLeft 0.5s ease-out forwards;
+        }
+        @keyframes slideInLeft {
+          from {
+            opacity: 0;
+            transform: translateX(-50px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
         }
       `}</style>
     </div>
