@@ -115,7 +115,7 @@ const GalleryImageCard = ({ title, url, tags, className }) => (
       style={{ minHeight: '300px' }} 
     />
     
-    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/0 to-transparent opacity-100 p-8 flex flex-col justify-end">
+    <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/0 to-transparent opacity-100 p-8 flex flex-col justify-end">
       <h4 className="text-white text-3xl font-bold mb-2">{title}</h4>
       <div className="flex flex-wrap gap-2">
         {tags.map((tag, i) => (
@@ -130,9 +130,9 @@ const GalleryImageCard = ({ title, url, tags, className }) => (
 
 // Gallery image data (images should be placed in the public/gallery/ folder)
 const galleryImages = [
-  { id: 1, title: "Forever ShortFlim (Upcoming)", url: "/gallery/Forever.png", tags: ["Lighting", "Romance"] },
+  { id: 1, title: "Forever ShortFlim (Upcoming)", url: "/gallery/Forever.png", tags: ["Lighting", "Night"] },
   { id: 2, title: "Beach Sunset", url: "/gallery/Beach.png", tags: ["Environment", "Golden Hour"] },
-  { id: 3, title: "Foliages on Rocks", url: "/gallery/Beach1.png", tags: ["Environment", "Foliage"] },
+  { id: 3, title: "Foliage on Rocks", url: "/gallery/Beach1.png", tags: ["Environment", "Foliage"] },
   { id: 4, title: "Truck Lit", url: "/gallery/Truck%20Lit.png", tags: ["Lighting", "Photogrammetry"] },
   { id: 5, title: "Church", url: "/gallery/post%201.png", tags: ["Night", "Eerie"] },
   { id: 6, title: "Japanese Mansion", url: "/gallery/Master3.png", tags: ["Environment", "Fog", "Anime"] },
@@ -279,7 +279,7 @@ export default function Portfolio() {
         ></div>
         
         <div className="container mx-auto px-6 relative z-10 text-center">
-          <p className="text-cyan-400 font-mono tracking-[0.3em] mb-4 animate-pulse">UNREAL ENGINE ARTIST</p>
+          <p className="text-cyan-400 font-mono tracking-[0.3em] mb-4 animate-pulse">UNREAL ENGINE CINEMATIC/ENVIRONMENT DESIGNER</p>
           <h1 className="text-5xl md:text-8xl font-black text-white mb-6 tracking-tight leading-tight" style={titleParallaxStyle}>
             <GlitchText text="INFINITE" /> <br />
             <span className="text-stroke-thin text-transparent bg-clip-text bg-linear-to-b from-white to-zinc-600">
@@ -535,7 +535,7 @@ export default function Portfolio() {
               <div className="p-4 bg-zinc-900 rounded-lg border border-zinc-800 mt-4">
                 <p className="text-xs text-zinc-500 uppercase tracking-widest mb-2">Contact Info</p>
                 <p className="text-white font-mono mb-1">gokulgopi2106@gmail.com</p>
-                <p className="text-zinc-500 text-sm mt-2">Ernakulam, Kerala</p>
+                <p className="text-zinc-500 text-sm mt-2">Ernakulam, Kerala, India</p>
               </div>
             </div>
           </div>
